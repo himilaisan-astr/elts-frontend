@@ -2,6 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './routes/PrivateRoute';
+import AntdThemeProvider from './theme/ThemeProvider';
+import { ThemeProvider } from './context/ThemeContext';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import Dashboard from './pages/Dashboard';
@@ -15,7 +17,9 @@ import './App.css';
 function App() {
   return (
     <AuthProvider>
-      <Router>
+      <ThemeProvider>
+        <AntdThemeProvider>
+          <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
@@ -32,7 +36,9 @@ function App() {
             </Route>
           </Route>
         </Routes>
-      </Router>
+          </Router>
+        </AntdThemeProvider>
+      </ThemeProvider>
     </AuthProvider>
   );
 }

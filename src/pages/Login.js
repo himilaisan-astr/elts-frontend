@@ -12,6 +12,8 @@ const Login = () => {
     setLoading(true);
     try {
       await login(values);
+      console.log(values);
+      console.log('Login successful!');
       message.success('Login successful!');
       navigate('/dashboard');
     } catch (error) {

@@ -1,18 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Card, Statistic, Button, List, Spin, message } from 'antd';
-import { UserOutlined, TeamOutlined, BookOutlined, DollarOutlined } from '@ant-design/icons';
+import { Row, Col, Card, Statistic, Button, List, Spin, message, Badge } from 'antd';
+import { UserOutlined, TeamOutlined, BookOutlined, DollarOutlined, CheckCircleOutlined, SyncOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { dashboard } from '../services/api';
-import HealthCheck from '../components/HealthCheck';
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [health, setHealth] = useState('checking');
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchDashboardStats();
+    checkHealth();
   }, []);
+
+  const checkHealth = async () => {
+    try {
+      await dashboard.checkHealth();
+      setHealth('healthy');
+    } catch (error) {
+      setHealth('unhealthy');
+      message.error('Backend connection issue');
+    }
+  };
 
   const fetchDashboardStats = async () => {
     try {
@@ -44,11 +55,25 @@ const Dashboard = () => {
   return (
     <div>
       <Row justify="space-between" align="middle" style={{ marginBottom: 24 }}>
-        <h1 style={{ margin: 0 }}>Dashboard</h1>
-        <Button type="primary" onClick={() => fetchDashboardStats()}>Refresh Data</Button>
+        <h1 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '12px' }}>
+          Dashboard
+          {health === 'healthy' ? (
+            <Badge status="success" text={<span style={{ color: '#52c41a' }}>Backend Connected</span>} />
+          ) : health === 'unhealthy' ? (
+            <Badge status="error" text={<span style={{ color: '#f5222d' }}>Backend Error</span>} />
+          ) : (
+            <Badge status="processing" text={<span style={{ color: '#1890ff' }}>Checking Connection</span>} />
+          )}
+        </h1>
+        <SyncOutlined 
+          spin={loading}
+          style={{ fontSize: '24px', cursor: 'pointer' }} 
+          onClick={() => {
+            fetchDashboardStats();
+            checkHealth();
+          }} 
+        />
       </Row>
-      
-      <HealthCheck />
       
       <Row gutter={16}>
         <Col span={6}>

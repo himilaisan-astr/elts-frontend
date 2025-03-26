@@ -1,13 +1,29 @@
-import React from 'react';
-import { Card, Form, Input, Button, Tabs, Switch, Select, Space } from 'antd';
+import React, { useEffect } from 'react';
+import { Card, Form, Input, Button, Tabs, Switch, Select, Space, message } from 'antd';
+import { useAuth } from '../hooks/useAuth';
 
 const { TabPane } = Tabs;
 
 const Settings = () => {
   const [form] = Form.useForm();
+  const { user, updateUserProfile } = useAuth();
 
-  const handleProfileSubmit = (values) => {
-    console.log('Profile updated:', values);
+  useEffect(() => {
+    if (user) {
+      form.setFieldsValue({
+        name: user.full_name,
+        email: user.email,
+      });
+    }
+  }, [user, form]);
+
+  const handleProfileSubmit = async (values) => {
+    try {
+      await updateUserProfile(values);
+      message.success('Profile updated successfully');
+    } catch (error) {
+      message.error('Failed to update profile: ' + error.message);
+    }
   };
 
   const handlePasswordSubmit = (values) => {
@@ -27,9 +43,8 @@ const Settings = () => {
             layout="vertical"
             onFinish={handleProfileSubmit}
             initialValues={{
-              name: 'John Doe',
-              email: 'john@example.com',
-              phone: '+1234567890',
+              name: '',
+              email: '',
             }}
           >
             <Form.Item

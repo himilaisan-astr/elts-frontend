@@ -14,7 +14,8 @@ const SignUp = () => {
       message.success('Registration successful! Please login.');
       navigate('/login');
     } catch (error) {
-      message.error('Registration failed: ' + (error.response?.data?.message || error.message));
+      console.error('Registration error:', error.response?.data?.detail);
+      message.error(error.response?.data?.detail)
     } finally {
       setLoading(false);
     }

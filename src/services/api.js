@@ -41,14 +41,15 @@ export const auth = {
 };
 
 export const dashboard = {
-  getStats: () => api.get('/api/dashboard/stats/'),
+  getStats: () => api.get('/dashboard/stats/'),
+  checkHealth: () => api.get('/health'),
 };
 
 export const students = {
-  getAll: () => api.get('/api/students/'),
-  create: (data) => api.post('/api/students/', data),
-  update: (id, data) => api.put(`/api/students/${id}`, data),
-  delete: (id) => api.delete(`/api/students/${id}`),
+  getAll: () => api.get('/students/'),
+  create: (data) => api.post('/students/', data),
+  update: (id, data) => api.put(`/students/${id}`, data),
+  delete: (id) => api.delete(`/students/${id}`),
 };
 
 export const teachers = {
@@ -59,15 +60,15 @@ export const teachers = {
 };
 
 export const courses = {
-  getAll: () => api.get('/api/courses/'),
-  create: (data) => api.post('/api/courses/', data),
-  update: (id, data) => api.put(`/api/courses/${id}`, data),
-  delete: (id) => api.delete(`/api/courses/${id}`),
+  getAll: () => api.get('/courses/'),
+  create: (data) => api.post('/courses/', data),
+  update: (id, data) => api.put(`/courses/${id}`, data),
+  delete: (id) => api.delete(`/courses/${id}`),
 };
 
 export const enrollments = {
-  getAll: () => api.get('/api/enrollments/'),
-  create: (data) => api.post('/api/enrollments/', data),
-  update: (id, data) => api.put(`/api/enrollments/${id}`, data),
-  delete: (id) => api.delete(`/api/enrollments/${id}`),
+  getAll: () => api.get('/enrollments/'),
+  create: (data) => api.post('/enrollments/', data),
+  update: (id, data) => api.put(`/enrollments/${id}`, data),
+  delete: (id) => api.delete(`/enrollments/${id}`),
 };

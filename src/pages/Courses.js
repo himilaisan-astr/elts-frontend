@@ -6,7 +6,7 @@ const CourseCard = ({ course }) => (
   <Card
     title={course.name}
     extra={<Button type="link">View Details</Button>}
-    style={{ marginBottom: 16 }}
+    style={{ marginBottom: 16, width: 'fit-content' }}
   >
     <p><strong>Instructor:</strong> {course.instructor}</p>
     <p><strong>Schedule:</strong> {course.schedule}</p>
@@ -66,7 +66,7 @@ const Courses = () => {
         </Space>
       </div>
 
-      <Row gutter={16}>
+      <Row gutter={300}>
         {courses.map(course => (
           <Col xs={24} sm={24} md={12} lg={8} key={course.id}>
             <CourseCard course={course} />

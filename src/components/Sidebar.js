@@ -49,9 +49,21 @@ const Sidebar = () => {
         mode="inline"
         selectedKeys={[location.pathname]}
         style={{ height: '100%', borderRight: 0 }}
-        items={menuItems}
         onClick={({ key }) => navigate(key)}
-      />
+      >
+        {menuItems.map(item => {
+          const isExact = location.pathname === item.key;
+          return (
+            <Menu.Item 
+              key={item.key} 
+              icon={item.icon}
+              className={isExact ? 'ant-menu-item-selected' : ''}
+            >
+              {item.label}
+            </Menu.Item>
+          );
+        })}
+      </Menu>
     </Sider>
   );
 };
