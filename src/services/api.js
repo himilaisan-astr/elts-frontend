@@ -53,10 +53,10 @@ export const students = {
 };
 
 export const teachers = {
-  getAll: () => api.get('/api/teachers/'),
-  create: (data) => api.post('/api/teachers/', data),
-  update: (id, data) => api.put(`/api/teachers/${id}`, data),
-  delete: (id) => api.delete(`/api/teachers/${id}`),
+  getAll: () => api.get('/teachers/'),
+  create: (data) => api.post('/teachers/', data),
+  update: (id, data) => api.put(`/teachers/${id}`, data),
+  delete: (id) => api.delete(`/teachers/${id}`),
 };
 
 export const courses = {
