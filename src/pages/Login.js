@@ -12,8 +12,6 @@ const Login = () => {
     setLoading(true);
     try {
       await login(values);
-
-      message.success('Login successful!');
       navigate('/dashboard');
     } catch (error) {
       message.error('Login failed: ' + (error.response?.data?.message || error.message));

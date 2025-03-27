@@ -5,23 +5,25 @@ import { SettingOutlined } from '@ant-design/icons';
 export const TableSettings = ({ allColumns, visibleColumns, onColumnChange }) => {
   const menu = (
     <Menu>
-      {allColumns.map(column => (
-        <Menu.Item key={column.key || column.dataIndex}>
-          <Checkbox
-            checked={visibleColumns.includes(column.key || column.dataIndex)}
-            onChange={e => {
-              const columnKey = column.key || column.dataIndex;
-              if (e.target.checked) {
-                onColumnChange([...visibleColumns, columnKey]);
-              } else {
-                onColumnChange(visibleColumns.filter(key => key !== columnKey));
-              }
-            }}
-          >
-            {column.title}
-          </Checkbox>
-        </Menu.Item>
-      ))}
+      {allColumns.map(column => {
+        const columnKey = column.key || column.dataIndex;
+        return (
+          <Menu.Item key={columnKey}>
+            <Checkbox
+              checked={visibleColumns.includes(columnKey)}
+              onChange={e => {
+                if (e.target.checked) {
+                  onColumnChange([...visibleColumns, columnKey]);
+                } else {
+                  onColumnChange(visibleColumns.filter(key => key !== columnKey));
+                }
+              }}
+            >
+              {column.title}
+            </Checkbox>
+          </Menu.Item>
+        );
+      })}
     </Menu>
   );
 

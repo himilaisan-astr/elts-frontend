@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Table } from 'antd';
 import { Resizable } from 'react-resizable';
 import 'react-resizable/css/styles.css';
-import './ResizableTable.css';
 
-const ResizableTitle = props => {
+// Resizable column component
+const ResizableTitle = (props) => {
   const { onResize, width, ...restProps } = props;
 
   if (!width) {
@@ -18,62 +18,58 @@ const ResizableTitle = props => {
       handle={
         <span
           className="react-resizable-handle"
-          onClick={e => e.stopPropagation()}
-          style={{
-            position: 'absolute',
-            right: -5,
-            bottom: 0,
-            top: 0,
-            width: 10,
-            cursor: 'col-resize',
-          }}
+          style={{ position: 'absolute', right: 0, bottom: 0, cursor: 'col-resize', width: 10, height: '100%' }}
         />
       }
       onResize={onResize}
-      draggableOpts={{ enableUserSelectHack: false }}
     >
       <th {...restProps} />
     </Resizable>
   );
 };
 
-const ResizableTable = ({ columns: defaultColumns, ...props }) => {
-  const [columns, setColumns] = useState(
-    defaultColumns.map(col => ({
-      ...col,
-      width: col.width || 150,
-    }))
-  );
+const ResizableTable = ({ columns = [], dataSource, ...props }) => {
+  const [resizableColumns, setResizableColumns] = useState([]);
+
+  useEffect(() => {
+    // Ensure columns is an array before updating state
+    if (Array.isArray(columns)) {
+      setResizableColumns(
+        columns.map((col) => ({
+          ...col,
+          width: col.width || 150, // Default width if not provided
+        }))
+      );
+    }
+  }, [columns]); // Re-run when columns change
 
   const handleResize = (index) => (e, { size }) => {
-    const newColumns = [...columns];
+    const newColumns = [...resizableColumns];
     newColumns[index] = {
       ...newColumns[index],
       width: size.width,
     };
-    setColumns(newColumns);
+    setResizableColumns(newColumns);
   };
 
-  const resizableColumns = columns.map((col, index) => ({
+  const mergedColumns = resizableColumns.map((col, index) => ({
     ...col,
-    onHeaderCell: column => ({
+    onHeaderCell: (column) => ({
       width: column.width,
       onResize: handleResize(index),
     }),
   }));
 
-  const components = {
-    header: {
-      cell: ResizableTitle,
-    },
-  };
-
   return (
     <Table
+      components={{
+        header: {
+          cell: ResizableTitle,
+        },
+      }}
+      columns={mergedColumns}
+      dataSource={dataSource}
       {...props}
-      components={components}
-      columns={resizableColumns}
-      bordered
     />
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import { Card, Button, Input, Space, Tag, message, Dropdown, Menu, Tooltip, Modal, Checkbox } from 'antd';
 import ResizableTable from '../components/ResizableTable';
 import { 
@@ -16,6 +16,10 @@ import { teachersApi } from '../services/api';
 import { bulkActions } from '../services/bulkActions';
 import TeacherForm from '../components/TeacherForm';
 import { TableSettings } from '../components/TableSettings';
+import { handleDelete, handleViewDetails } from '../actions';
+import { fetchTeachers } from '../services/apiActions';
+
+
 
 const Teachers = () => {
   const [searchText, setSearchText] = useState('');
@@ -26,106 +30,12 @@ const Teachers = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [confirmLoading, setConfirmLoading] = useState(false);
 
-  const fetchTeachers = async () => {
-    try {
-      const response = await teachersApi.getAll();
-      setTeachers(response.data);
-    } catch (error) {
-      message.error('Failed to fetch teachers');
-    }
-  };
-
-  useEffect(() => {
-    fetchTeachers();
-  }, []);
-
-  const handleCreateTeacher = async (values) => {
-    try {
-      setLoading(true);
-      await teachersApi.create(values);
-      message.success('Teacher created successfully');
-      setModalVisible(false);
-      fetchTeachers(); // Refresh the list
-    } catch (error) {
-      message.error('Failed to create teacher');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleEdit = (record) => {
-    setModalVisible(true);
-  };
-
-  const handleDelete = async (ids) => {
-    Modal.confirm({
-      title: 'Are you sure you want to delete these teachers?',
-      content: `This will permanently delete ${ids.length} teacher(s).`,
-      okText: 'Yes',
-      okType: 'danger',
-      cancelText: 'No',
-      onOk: async () => {
-        setConfirmLoading(true);
-        try {
-          await Promise.all(ids.map(id => teachersApi.delete(id)));
-          message.success('Teachers deleted successfully');
-          fetchTeachers();
-          setSelectedRows([]);
-        } catch (error) {
-          message.error('Failed to delete teachers');
-        } finally {
-          setConfirmLoading(false);
-        }
-      },
-    });
-  };
-
-  const handleBulkActions = async ({ key }) => {
-    try {
-      switch (key) {
-      case 'delete':
-        handleDelete(selectedRows);
-        break;
-      case 'activate':
-        await bulkActions.activateTeachers(selectedRows);
-        message.success('Teachers activated successfully');
-        fetchTeachers();
-        setSelectedRows([]);
-        break;
-      case 'deactivate':
-        await bulkActions.deactivateTeachers(selectedRows);
-        message.success('Teachers deactivated successfully');
-        fetchTeachers();
-        setSelectedRows([]);
-        break;
-      default:
-        break;
-      }
-    } catch (error) {
-      message.error('Failed to perform bulk action');
-    }
-  };
-
   const allColumns = [
-    {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      width: 80,
-      fixed: 'left',
-      sorter: (a, b) => a.id - b.id,
-    },
     {
       title: 'Name',
       key: 'name',
-      fixed: 'left',
       render: (_, record) => `${record.first_name} ${record.last_name}`,
       sorter: (a, b) => `${a.first_name} ${a.last_name}`.localeCompare(`${b.first_name} ${b.last_name}`),
-      filterMode: 'tree',
-      filterSearch: true,
-      filters: [...new Set(teachers.map(t => `${t.first_name} ${t.last_name}`))]
-        .map(name => ({ text: name, value: name })),
-      onFilter: (value, record) => `${record.first_name} ${record.last_name}` === value,
     },
     {
       title: 'Email',
@@ -173,8 +83,6 @@ const Teachers = () => {
     {
       title: 'Actions',
       key: 'actions',
-      fixed: 'right',
-      width: 150,
       render: (_, record) => (
         <Space size="middle">
           <Tooltip title="Edit">
@@ -188,14 +96,14 @@ const Teachers = () => {
             <Button 
               type="link" 
               icon={<EyeOutlined />} 
-              onClick={() => message.info('View details functionality coming soon')}
+              onClick={() => handleViewDetails(record)}
             />
           </Tooltip>
           <Tooltip title="Delete">
             <Button 
               type="link" 
               danger 
-              icon={<DeleteOutlined />} 
+              icon={<DeleteOutlined />}
               onClick={() => handleDelete([record.id])}
             />
           </Tooltip>
@@ -204,14 +112,74 @@ const Teachers = () => {
     },
   ];
 
+  useEffect(() => {
+    fetchTeachers(setTeachers);
+  }, []);
+
+  useEffect(() => {
+    setColumns(allColumns.filter(col => {
+      return visibleColumns.includes(col.key || col.dataIndex);
+    }));
+
+    message.success('Columns updated');
+  }, [visibleColumns]);
+
+  const handleCreateTeacher = async (values) => {
+    try {
+      setLoading(true);
+      await teachersApi.create(values);
+      message.success('Teacher created successfully');
+      setModalVisible(false);
+      fetchTeachers(); // Refresh the list
+    } catch (error) {
+      message.error('Failed to create teacher');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEdit = (record) => {
+    setModalVisible(true);
+  };
+
+  const handleBulkActions = async ({ key }) => {
+    try {
+      switch (key) {
+      case 'delete':
+        handleDelete(selectedRows);
+        break;
+      case 'activate':
+        await bulkActions.activateTeachers(selectedRows);
+        message.success('Teachers activated successfully');
+        fetchTeachers();
+        setSelectedRows([]);
+        break;
+      case 'deactivate':
+        await bulkActions.deactivateTeachers(selectedRows);
+        message.success('Teachers deactivated successfully');
+        fetchTeachers();
+        setSelectedRows([]);
+        break;
+      default:
+        break;
+      }
+    } catch (error) {
+      message.error('Failed to perform bulk action');
+    }
+  };
+
+
   // Filter teachers based on search text
+
   const filteredTeachers = teachers.filter(teacher =>
     `${teacher.first_name} ${teacher.last_name}`.toLowerCase().includes(searchText.toLowerCase()) ||
     teacher.email.toLowerCase().includes(searchText.toLowerCase()) ||
     teacher.specialization.toLowerCase().includes(searchText.toLowerCase())
   );
 
-  const columns = allColumns.filter(col => visibleColumns.includes(col.key));
+  const [columns, setColumns] = useState(allColumns.filter(col => {
+    return visibleColumns.includes(col.key || col.dataIndex);
+  }));
 
   return (
     <Card 
@@ -273,6 +241,7 @@ const Teachers = () => {
           </Space>
         )}
       </div>
+
       <ResizableTable
         columns={columns}
         dataSource={filteredTeachers}

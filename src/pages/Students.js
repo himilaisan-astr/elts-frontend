@@ -41,6 +41,10 @@ const Students = () => {
     fetchStudents();
   }, []);
 
+  useEffect(() => {
+    setColumns(allColumns.filter(col => visibleColumns.includes(col.key)));
+  }, [visibleColumns]);
+
   const handleEdit = (record) => {
     setSelectedStudent(record);
     setModalVisible(true);
@@ -194,7 +198,7 @@ const Students = () => {
     student.email.toLowerCase().includes(searchText.toLowerCase())
   );
 
-  const columns = allColumns.filter(col => visibleColumns.includes(col.key));
+  const [columns, setColumns] = useState(allColumns.filter(col => visibleColumns.includes(col.key)));
 
   return (
     <Card

@@ -11,15 +11,16 @@ import {
   StopOutlined,
   DownOutlined
 } from '@ant-design/icons';
-import { coursesApi, teachersApi } from '../services/api';
+import { coursesApi } from '../services/api';
 import { bulkActions } from '../services/bulkActions';
 import CourseForm from '../components/CourseForm';
 import { CourseCard } from '../components/cards';
+import { handleEdit, handleViewDetails, handleManageStudents, handleDelete } from '../actions';
+import { fetchCourses, fetchTeachers } from '../services/apiActions';
 
 const Courses = () => {
   const [searchText, setSearchText] = useState('');
   const [courses, setCourses] = useState([]);
-  const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
@@ -30,43 +31,13 @@ const Courses = () => {
   const [studentModalVisible, setStudentModalVisible] = useState(false);
   const [selectedCourseForStudents, setSelectedCourseForStudents] = useState(null);
   const [courseStudents, setCourseStudents] = useState([]);
+  const [teachers, setTeachers] = useState([]);
 
-  const fetchCourses = async () => {
-    try {
-      const response = await coursesApi.getAll();
-      setCourses(response.data);
-    } catch (error) {
-      message.error('Failed to fetch courses');
-    }
-  };
 
   useEffect(() => {
-    fetchCourses();
+    fetchCourses(setCourses);
+    fetchTeachers(setTeachers);
   }, []);
-
-  const handleEdit = (course) => {
-    Modal.info({
-      title: 'Edit Feature Unavailable',
-      content: (
-        <p>
-          Sorry, editing this course is currently unavailable. Please wait for the next update, where we will introduce this feature with exciting improvements. Stay tuned! 🚀
-        </p>
-      ),
-      okText: 'Got it!',
-    });
-  };
-
-  const handleViewDetails = (course) => {
-    message.info('View details functionality coming soon');
-  };
-
-  const handleManageStudents = async (course) => {
-    message.info('Manage students functionality coming soon');
-  };
-
-  const handleDelete = async (ids) => {
-    message.warning('Delete feature is currently unavailable. Please wait for the next update.');
-  };
 
   const handleBulkActions = async ({ key }) => {
     try {
