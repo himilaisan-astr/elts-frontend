@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, InputNumber, Select, Modal } from 'antd';
+import { Form, Input, Select, Modal, message } from 'antd';
 
 const TeacherForm = ({ visible, onCancel, onSubmit, loading }) => {
   const [form] = Form.useForm();
@@ -10,7 +10,7 @@ const TeacherForm = ({ visible, onCancel, onSubmit, loading }) => {
       await onSubmit(values);
       form.resetFields();
     } catch (error) {
-      console.error('Validation failed:', error);
+      message.error('Validation failed:', error);
     }
   };
 

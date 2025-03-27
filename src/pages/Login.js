@@ -12,8 +12,7 @@ const Login = () => {
     setLoading(true);
     try {
       await login(values);
-      console.log(values);
-      console.log('Login successful!');
+
       message.success('Login successful!');
       navigate('/dashboard');
     } catch (error) {
@@ -30,7 +29,8 @@ const Login = () => {
       alignItems: 'center', 
       minHeight: '100vh',
       background: '#f0f2f5'
-    }}>
+    }}
+    >
       <Card title="Welcome to ELTS School of English" style={{ width: 400 }}>
         <Form
           name="login"

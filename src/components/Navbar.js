@@ -30,7 +30,8 @@ const Navbar = () => {
         alignItems: 'center',
         background: isDarkMode ? '#001529' : '#ffffff',
         borderBottom: '1px solid #f0f0f0'
-      }}>
+      }}
+    >
       <Link to="/dashboard" className="logo">
         <span className="logo-text" style={{ color: isDarkMode ? '#fff' : '#1890ff' }}>ELTS</span>
       </Link>

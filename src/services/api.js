@@ -34,39 +34,40 @@ api.interceptors.response.use(
   }
 );
 
-export const auth = {
+export const authApi = {
   login: (credentials) => api.post('/token', credentials),
   register: (userData) => api.post('/users/', userData),
   me: () => api.get('/users/me/'),
 };
 
-export const dashboard = {
+export const dashboardApi = {
   getStats: () => api.get('/dashboard/stats/'),
   checkHealth: () => api.get('/health'),
 };
 
-export const students = {
+export const studentsApi = {
   getAll: () => api.get('/students/'),
   create: (data) => api.post('/students/', data),
   update: (id, data) => api.put(`/students/${id}`, data),
   delete: (id) => api.delete(`/students/${id}`),
 };
 
-export const teachers = {
+export const teachersApi = {
   getAll: () => api.get('/teachers/'),
   create: (data) => api.post('/teachers/', data),
   update: (id, data) => api.put(`/teachers/${id}`, data),
   delete: (id) => api.delete(`/teachers/${id}`),
 };
 
-export const courses = {
+export const coursesApi = {
   getAll: () => api.get('/courses/'),
   create: (data) => api.post('/courses/', data),
   update: (id, data) => api.put(`/courses/${id}`, data),
   delete: (id) => api.delete(`/courses/${id}`),
+  getStudents: (id) => api.get(`/courses/${id}/students`),
 };
 
-export const enrollments = {
+export const enrollmentsApi = {
   getAll: () => api.get('/enrollments/'),
   create: (data) => api.post('/enrollments/', data),
   update: (id, data) => api.put(`/enrollments/${id}`, data),

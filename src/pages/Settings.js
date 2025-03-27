@@ -27,11 +27,11 @@ const Settings = () => {
   };
 
   const handlePasswordSubmit = (values) => {
-    console.log('Password updated:', values);
+    message.info('Password update functionality coming soon');
   };
 
   const handleNotificationSettings = (values) => {
-    console.log('Notification settings updated:', values);
+    message.info('Notification settings functionality coming soon');
   };
 
   return (

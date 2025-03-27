@@ -14,8 +14,8 @@ const SignUp = () => {
       message.success('Registration successful! Please login.');
       navigate('/login');
     } catch (error) {
-      console.error('Registration error:', error.response?.data?.detail);
-      message.error(error.response?.data?.detail)
+
+      message.error(error.response?.data?.detail);
     } finally {
       setLoading(false);
     }
@@ -28,7 +28,8 @@ const SignUp = () => {
       alignItems: 'center', 
       minHeight: '100vh',
       background: '#f0f2f5'
-    }}>
+    }}
+    >
       <Card title="Sign Up for ELTS School of English" style={{ width: 400 }}>
         <Form
           name="signup"

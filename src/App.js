@@ -20,22 +20,22 @@ function App() {
       <ThemeProvider>
         <AntdThemeProvider>
           <Router>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
           
-          {/* Protected Routes */}
-          <Route element={<PrivateRoute />}>
-            <Route element={<AdminLayout />}>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/students" element={<Students />} />
-              <Route path="/teachers" element={<Teachers />} />
-              <Route path="/courses" element={<Courses />} />
-              <Route path="/settings" element={<Settings />} />
-            </Route>
-          </Route>
-        </Routes>
+              {/* Protected Routes */}
+              <Route element={<PrivateRoute />}>
+                <Route element={<AdminLayout />}>
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/students" element={<Students />} />
+                  <Route path="/teachers" element={<Teachers />} />
+                  <Route path="/courses" element={<Courses />} />
+                  <Route path="/settings" element={<Settings />} />
+                </Route>
+              </Route>
+            </Routes>
           </Router>
         </AntdThemeProvider>
       </ThemeProvider>

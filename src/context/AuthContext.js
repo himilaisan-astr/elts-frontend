@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { auth } from '../services/api';
+import { authApi } from '../services/api';
 import { message } from 'antd';
 
 export const AuthContext = createContext(null);
@@ -16,11 +16,11 @@ export const AuthProvider = ({ children }) => {
     try {
       const token = localStorage.getItem('token');
       if (token) {
-        const response = await auth.me();
+        const response = await authApi.me();
         setUser(response.data);
       }
     } catch (error) {
-      console.error('Auth check failed:', error);
+      message.error('Auth check failed:', error);
       localStorage.removeItem('token');
     } finally {
       setLoading(false);
@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     try {
-      const response = await auth.login(credentials);
+      const response = await authApi.login(credentials);
       localStorage.setItem('token', response.data.access_token);
       await checkAuth();
       message.success('Successfully logged in!');
@@ -46,14 +46,13 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
       message.success('Successfully logged out!');
     } catch (error) {
-      console.error('Logout error:', error);
       message.error('Failed to logout');
     }
   };
 
   const register = async (userData) => {
     try {
-      await auth.register(userData);
+      await authApi.register(userData);
       message.success('Registration successful! Please login.');
       return true;
     } catch (error) {

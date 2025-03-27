@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Select, Modal } from 'antd';
+import { Form, Input, Select, Modal, message } from 'antd';
 
 const StudentForm = ({ visible, onCancel, onSubmit, loading }) => {
   const [form] = Form.useForm();
@@ -10,7 +10,7 @@ const StudentForm = ({ visible, onCancel, onSubmit, loading }) => {
       await onSubmit(values);
       form.resetFields();
     } catch (error) {
-      console.error('Validation failed:', error);
+      message.error('Validation failed:', error);
     }
   };
 
@@ -24,9 +24,16 @@ const StudentForm = ({ visible, onCancel, onSubmit, loading }) => {
     >
       <Form form={form} layout="vertical">
         <Form.Item
-          name="name"
-          label="Full Name"
-          rules={[{ required: true, message: 'Please enter student name' }]}
+          name="first_name"
+          label="First Name"
+          rules={[{ required: true, message: 'Please enter first name' }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          name="last_name"
+          label="Last Name"
+          rules={[{ required: true, message: 'Please enter last name' }]}
         >
           <Input />
         </Form.Item>
@@ -41,25 +48,32 @@ const StudentForm = ({ visible, onCancel, onSubmit, loading }) => {
           <Input />
         </Form.Item>
         <Form.Item
-          name="course"
-          label="Course"
-          rules={[{ required: true, message: 'Please select a course' }]}
+          name="phone"
+          label="Phone"
+          rules={[{ required: true, message: 'Please enter phone number' }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          name="level"
+          label="Level"
+          rules={[{ required: true, message: 'Please select level' }]}
         >
           <Select>
-            <Select.Option value="Mathematics">Mathematics</Select.Option>
-            <Select.Option value="Science">Science</Select.Option>
-            <Select.Option value="English">English</Select.Option>
+            <Select.Option value="Beginner">Beginner</Select.Option>
+            <Select.Option value="Intermediate">Intermediate</Select.Option>
+            <Select.Option value="Advanced">Advanced</Select.Option>
           </Select>
         </Form.Item>
         <Form.Item
-          name="status"
+          name="active"
           label="Status"
-          initialValue="active"
+          initialValue={true}
           rules={[{ required: true }]}
         >
           <Select>
-            <Select.Option value="active">Active</Select.Option>
-            <Select.Option value="inactive">Inactive</Select.Option>
+            <Select.Option value={true}>Active</Select.Option>
+            <Select.Option value={false}>Inactive</Select.Option>
           </Select>
         </Form.Item>
       </Form>

@@ -1,7 +1,7 @@
 import React from 'react';
-import { Form, Input, InputNumber, Select, Modal, DatePicker } from 'antd';
+import { Form, Input, InputNumber, Select, Modal, DatePicker, message } from 'antd';
 
-const CourseForm = ({ visible, onCancel, onSubmit, loading, teachers = [] }) => {
+const CourseForm = ({ visible, onCancel, onSubmit, loading, teachers = [], initialValues = null }) => {
   const [form] = Form.useForm();
 
   const handleSubmit = async () => {
@@ -10,19 +10,20 @@ const CourseForm = ({ visible, onCancel, onSubmit, loading, teachers = [] }) => 
       await onSubmit(values);
       form.resetFields();
     } catch (error) {
-      console.error('Validation failed:', error);
+      message.error('Failed to create course');
+      
     }
   };
 
   return (
     <Modal
-      title="Add New Course"
+      title={initialValues ? 'Edit Course' : 'Add New Course'}
       visible={visible}
       onCancel={onCancel}
       onOk={handleSubmit}
       confirmLoading={loading}
     >
-      <Form form={form} layout="vertical">
+      <Form form={form} layout="vertical" initialValues={initialValues}>
         <Form.Item
           name="name"
           label="Course Name"
@@ -33,7 +34,11 @@ const CourseForm = ({ visible, onCancel, onSubmit, loading, teachers = [] }) => 
         <Form.Item
           name="description"
           label="Description"
-          rules={[{ required: true, message: 'Please enter course description' }]}
+          rules={[
+            { required: true, message: 'Please enter course description' },
+            { min: 50, message: 'Description must be at least 50 characters' },
+            { max: 500, message: 'Description cannot exceed 500 characters' }
+          ]}
         >
           <Input.TextArea rows={4} />
         </Form.Item>

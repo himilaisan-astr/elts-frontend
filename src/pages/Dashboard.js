@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Statistic, Button, List, Spin, message, Badge } from 'antd';
-import { UserOutlined, TeamOutlined, BookOutlined, DollarOutlined, CheckCircleOutlined, SyncOutlined } from '@ant-design/icons';
+import { UserOutlined, TeamOutlined, BookOutlined, DollarOutlined, SyncOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { dashboard } from '../services/api';
+import { dashboardApi } from '../services/api';
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
@@ -17,7 +17,7 @@ const Dashboard = () => {
 
   const checkHealth = async () => {
     try {
-      await dashboard.checkHealth();
+      await dashboardApi.checkHealth();
       setHealth('healthy');
     } catch (error) {
       setHealth('unhealthy');
@@ -27,11 +27,11 @@ const Dashboard = () => {
 
   const fetchDashboardStats = async () => {
     try {
-      const response = await dashboard.getStats();
+      const response = await dashboardApi.getStats();
       setStats(response.data);
     } catch (error) {
       message.error('Failed to fetch dashboard statistics');
-      console.error('Dashboard stats error:', error);
+
     } finally {
       setLoading(false);
     }
