@@ -11,12 +11,11 @@ import {
   StopOutlined,
   DownOutlined
 } from '@ant-design/icons';
-import { coursesApi } from '../services/api';
-import { bulkActions } from '../services/bulkActions';
+import { coursesApi , teachersApi} from '../services/api';
+import { bulkActions } from '../services/api';
 import CourseForm from '../components/CourseForm';
 import { CourseCard } from '../components/cards';
 import { handleEdit, handleViewDetails, handleManageStudents, handleDelete } from '../actions';
-import { fetchCourses, fetchTeachers } from '../services/apiActions';
 
 const Courses = () => {
   const [searchText, setSearchText] = useState('');
@@ -35,9 +34,31 @@ const Courses = () => {
 
 
   useEffect(() => {
-    fetchCourses(setCourses);
-    fetchTeachers(setTeachers);
+    fetchCourses();
+    fetchTeachers();
   }, []);
+
+  const fetchCourses = async () => {
+    try {
+      const response = await coursesApi.getAll();
+      setCourses(response.data);
+    } catch (error) {
+      message.error(error.message || 'Failed to fetch courses');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchTeachers = async () => {
+    try {
+      const response = await teachersApi.getAll();
+      setTeachers(response.data);
+    } catch (error) {
+      message.error(error.message || 'Failed to fetch teachers');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleBulkActions = async ({ key }) => {
     try {

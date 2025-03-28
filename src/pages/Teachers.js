@@ -1,4 +1,4 @@
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Button, Input, Space, Tag, message, Dropdown, Menu, Tooltip, Modal, Checkbox } from 'antd';
 import ResizableTable from '../components/ResizableTable';
 import { 
@@ -12,14 +12,12 @@ import {
   StopOutlined,
   DownOutlined
 } from '@ant-design/icons';
-import { teachersApi } from '../services/api';
-import { bulkActions } from '../services/bulkActions';
+import { teachersApi, bulkActions } from '../services/api';
 import TeacherForm from '../components/TeacherForm';
 import { TableSettings } from '../components/TableSettings';
-import { handleDelete, handleViewDetails } from '../actions';
-import { fetchTeachers } from '../services/apiActions';
 
 
+// TODO: fix the bulk actions service
 
 const Teachers = () => {
   const [searchText, setSearchText] = useState('');
@@ -27,6 +25,7 @@ const Teachers = () => {
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState(['name', 'email', 'specialization', 'status']);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [confirmLoading, setConfirmLoading] = useState(false);
 
@@ -113,15 +112,24 @@ const Teachers = () => {
   ];
 
   useEffect(() => {
-    fetchTeachers(setTeachers);
+    fetchTeachers();
   }, []);
+
+  const fetchTeachers = async () => {
+    try {
+      const response = await teachersApi.getAll();
+      setTeachers(response.data);
+    } catch (error) {
+      message.error(error.message || 'Failed to fetch teachers');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     setColumns(allColumns.filter(col => {
       return visibleColumns.includes(col.key || col.dataIndex);
     }));
-
-    message.success('Columns updated');
   }, [visibleColumns]);
 
   const handleCreateTeacher = async (values) => {
@@ -142,35 +150,48 @@ const Teachers = () => {
     setModalVisible(true);
   };
 
-  const handleBulkActions = async ({ key }) => {
-    try {
-      switch (key) {
-      case 'delete':
-        handleDelete(selectedRows);
-        break;
-      case 'activate':
-        await bulkActions.activateTeachers(selectedRows);
-        message.success('Teachers activated successfully');
-        fetchTeachers();
-        setSelectedRows([]);
-        break;
-      case 'deactivate':
-        await bulkActions.deactivateTeachers(selectedRows);
-        message.success('Teachers deactivated successfully');
-        fetchTeachers();
-        setSelectedRows([]);
-        break;
-      default:
-        break;
-      }
-    } catch (error) {
-      message.error('Failed to perform bulk action');
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: (selectedKeys, selectedRows) => {
+      setSelectedRowKeys(selectedKeys);
+      setSelectedRows(selectedRows);
     }
   };
 
+  const handleBulkActions = async ({ key }) => {
+    try {
+      switch (key) {
+        case 'delete':
+          await bulkActions.deleteTeachers(selectedRowKeys);
+          message.success('Teachers deleted successfully');
+          fetchTeachers();
+          setSelectedRowKeys([]);
+          setSelectedRows([]);
+          break;
+        case 'activate':
+          await bulkActions.activateTeachers(selectedRowKeys);
+          message.success('Teachers activated successfully');
+          fetchTeachers();
+          setSelectedRowKeys([]);
+          setSelectedRows([]);
+          break;
+        case 'deactivate':
+          await bulkActions.deactivateTeachers(selectedRowKeys);
+          message.success('Teachers deactivated successfully');
+          fetchTeachers();
+          setSelectedRowKeys([]);
+          setSelectedRows([]);
+          break;
+        default:
+          break;
+      }
+    } catch (error) {
+      console.error('Failed to perform bulk action:', error);
+      message.error(`Failed to perform bulk action: ${error.message}`);
+    }
+  };
 
   // Filter teachers based on search text
-
   const filteredTeachers = teachers.filter(teacher =>
     `${teacher.first_name} ${teacher.last_name}`.toLowerCase().includes(searchText.toLowerCase()) ||
     teacher.email.toLowerCase().includes(searchText.toLowerCase()) ||
@@ -247,11 +268,7 @@ const Teachers = () => {
         dataSource={filteredTeachers}
         rowKey="id"
         scroll={{ x: 'max-content' }}
-        rowSelection={{
-          type: 'checkbox',
-          selectedRowKeys: selectedRows,
-          onChange: setSelectedRows,
-        }}
+        rowSelection={rowSelection}
         pagination={{
           total: filteredTeachers.length,
           pageSize: 10,

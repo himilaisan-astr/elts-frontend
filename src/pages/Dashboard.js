@@ -37,11 +37,15 @@ const Dashboard = () => {
     }
   };
 
+  const showComingSoonMessage = () => {
+    message.info('This feature will be available in the next update!');
+  };
+
   const quickActions = [
-    { title: 'Add New Student', onClick: () => navigate('/students/new'), icon: <UserOutlined /> },
-    { title: 'Add New Teacher', onClick: () => navigate('/teachers/new'), icon: <TeamOutlined /> },
-    { title: 'Create Course', onClick: () => navigate('/courses/new'), icon: <BookOutlined /> },
-    { title: 'View Enrollments', onClick: () => navigate('/enrollments'), icon: <DollarOutlined /> },
+    { title: 'Add New Student', onClick: showComingSoonMessage, icon: <UserOutlined /> },
+    { title: 'Add New Teacher', onClick: showComingSoonMessage, icon: <TeamOutlined /> },
+    { title: 'Create Course', onClick: showComingSoonMessage, icon: <BookOutlined /> },
+    { title: 'View Enrollments', onClick: showComingSoonMessage, icon: <DollarOutlined /> },
   ];
 
   if (loading) {

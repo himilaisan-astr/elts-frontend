@@ -12,8 +12,7 @@ import {
   StopOutlined,
   DownOutlined
 } from '@ant-design/icons';
-import { studentsApi } from '../services/api';
-import { bulkActions } from '../services/bulkActions';
+import { studentsApi, bulkActions } from '../services/api';
 import StudentForm from '../components/StudentForm';
 import { TableSettings } from '../components/TableSettings';
 
@@ -24,96 +23,9 @@ const Students = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [visibleColumns, setVisibleColumns] = useState(['first_name', 'last_name', 'email', 'phone', 'level', 'status']);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [confirmLoading, setConfirmLoading] = useState(false);
-
-  const fetchStudents = async () => {
-    try {
-      const response = await studentsApi.getAll();
-      setStudents(response.data);
-    } catch (error) {
-      message.error('Failed to fetch students');
-
-    }
-  };
-
-  useEffect(() => {
-    fetchStudents();
-  }, []);
-
-  useEffect(() => {
-    setColumns(allColumns.filter(col => visibleColumns.includes(col.key)));
-  }, [visibleColumns]);
-
-  const handleEdit = (record) => {
-    setSelectedStudent(record);
-    setModalVisible(true);
-  };
-
-  const handleDelete = async (ids) => {
-    Modal.confirm({
-      title: 'Are you sure you want to delete these students?',
-      content: `This will permanently delete ${ids.length} student(s).`,
-      okText: 'Yes',
-      okType: 'danger',
-      cancelText: 'No',
-      onOk: async () => {
-        setConfirmLoading(true);
-        try {
-          await Promise.all(ids.map(id => studentsApi.delete(id)));
-          message.success('Students deleted successfully');
-          fetchStudents();
-          setSelectedRows([]);
-        } catch (error) {
-          message.error('Failed to delete students');
-
-        } finally {
-          setConfirmLoading(false);
-        }
-      },
-    });
-  };
-
-  const handleBulkActions = async ({ key }) => {
-    try {
-      switch (key) {
-      case 'delete':
-        handleDelete(selectedRows);
-        break;
-      case 'activate':
-        await bulkActions.activateStudents(selectedRows);
-        message.success('Students activated successfully');
-        fetchStudents();
-        setSelectedRows([]);
-        break;
-      case 'deactivate':
-        await bulkActions.deactivateStudents(selectedRows);
-        message.success('Students deactivated successfully');
-        fetchStudents();
-        setSelectedRows([]);
-        break;
-      default:
-        break;
-      }
-    } catch (error) {
-      message.error('Failed to perform bulk action');
-    }
-  };
-
-  const handleCreateStudent = async (values) => {
-    try {
-      setLoading(true);
-      await studentsApi.create(values);
-      message.success('Student created successfully');
-      setModalVisible(false);
-      fetchStudents(); // Refresh the list
-    } catch (error) {
-      message.error('Failed to create student');
-
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const allColumns = [
     {
@@ -192,6 +104,109 @@ const Students = () => {
     }
   ];
 
+  useEffect(() => {
+    fetchStudents();
+  }, []);
+
+  const fetchStudents = async () => {
+    try {
+      const response = await studentsApi.getAll();
+      setStudents(response.data);
+    } catch (error) {
+      message.error('Failed to fetch students');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    setColumns(allColumns.filter(col => visibleColumns.includes(col.key || col.dataIndex)));
+  }, [visibleColumns]);
+
+  const handleEdit = (record) => {
+    setSelectedStudent(record);
+    setModalVisible(true);
+  };
+
+  const handleDelete = async (ids) => {
+    Modal.confirm({
+      title: 'Are you sure you want to delete these students?',
+      content: `This will permanently delete ${ids.length} student(s).`,
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk: async () => {
+        setConfirmLoading(true);
+        try {
+          await Promise.all(ids.map(id => studentsApi.delete(id)));
+          message.success('Students deleted successfully');
+          fetchStudents();
+          setSelectedRows([]);
+        } catch (error) {
+          message.error('Failed to delete students');
+
+        } finally {
+          setConfirmLoading(false);
+        }
+      },
+    });
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: (selectedKeys, selectedRows) => {
+      setSelectedRowKeys(selectedKeys);
+      setSelectedRows(selectedRows);
+    }
+  };
+
+  const handleBulkActions = async ({ key }) => {
+    try {
+      switch (key) {
+        case 'delete':
+          await bulkActions.deleteStudents(selectedRowKeys);
+          message.success('Students deleted successfully');
+          fetchStudents();
+          setSelectedRowKeys([]);
+          setSelectedRows([]);
+          break;
+        case 'activate':
+          await bulkActions.activateStudents(selectedRowKeys);
+          message.success('Students activated successfully');
+          fetchStudents();
+          setSelectedRowKeys([]);
+          setSelectedRows([]);
+          break;
+        case 'deactivate':
+          await bulkActions.deactivateStudents(selectedRowKeys);
+          message.success('Students deactivated successfully');
+          fetchStudents();
+          setSelectedRowKeys([]);
+          setSelectedRows([]);
+          break;
+        default:
+          break;
+      }
+    } catch (error) {
+      console.error('Failed to perform bulk action:', error);
+      message.error(`Failed to perform bulk action: ${error.message}`);
+    }
+  };
+
+  const handleCreateStudent = async (values) => {
+    try {
+      setLoading(true);
+      await studentsApi.create(values);
+      message.success('Student created successfully');
+      setModalVisible(false);
+      fetchStudents(); // Refresh the list
+    } catch (error) {
+      message.error('Failed to create student');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Filter students based on search text
   const filteredStudents = students.filter(student =>
     `${student.first_name} ${student.last_name}`.toLowerCase().includes(searchText.toLowerCase()) ||
@@ -226,15 +241,15 @@ const Students = () => {
               onChange={e => setSearchText(e.target.value)}
               style={{ width: 200 }}
             />
-            <Button 
-              type="primary" 
+            <Button
+              type="primary"
               icon={<UserAddOutlined />}
               onClick={() => {
                 setSelectedStudent(null);
                 setModalVisible(true);
               }}
             >
-            Add Student
+              Add Student
             </Button>
           </Space>
         </Space>
@@ -275,11 +290,7 @@ const Students = () => {
           showQuickJumper: true,
           showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
         }}
-        rowSelection={{
-          type: 'checkbox',
-          onChange: (selectedRowKeys) => setSelectedRows(selectedRowKeys),
-          selectedRowKeys: selectedRows,
-        }}
+        rowSelection={rowSelection}
         loading={loading || confirmLoading}
       />
 
