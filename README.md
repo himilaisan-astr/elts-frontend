@@ -1,70 +1,166 @@
-# Getting Started with Create React App
+# ELTS School of English - Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
+This is the frontend application for the ELTS (English Language Teaching System) School of English. Built with React and Ant Design, it provides a modern and intuitive interface for managing an English language school's operations.
+
+## Features
+- 🎨 Modern, Responsive UI with Ant Design
+- 📊 Interactive Dashboard
+- 👥 User Management
+- 📚 Course Management
+- 📝 Enrollment System
+- 💰 Revenue Tracking
+- 🌓 Light/Dark Theme Support
+- 📱 Mobile-Friendly Design
+
+## Tech Stack
+- **Framework**: React 18
+- **UI Library**: Ant Design 5
+- **State Management**: React Context
+- **Routing**: React Router 6
+- **HTTP Client**: Axios
+- **Charts**: Ant Design Charts
+
+## Prerequisites
+- Node.js 16+
+- Yarn package manager
+
+## Installation
+
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd elts-frontend
+```
+
+2. Install dependencies:
+```bash
+yarn install
+```
+
+3. Create a `.env` file in the root directory:
+```env
+REACT_APP_API_URL=http://localhost:8000/api
+```
+
+## Running the Application
+
+Start the development server:
+```bash
+yarn start
+```
+
+The application will be available at `http://localhost:3000`
+
+## Building for Production
+
+Create a production build:
+```bash
+yarn build
+```
+
+## Main Features
+
+### Dashboard
+- Overview of key metrics
+- Quick action buttons
+- Revenue statistics
+- Active enrollments tracking
+
+### Student Management
+- View all students
+- Add/Edit/Delete students
+- Filter and search functionality
+- Student details view
+
+### Teacher Management
+- Teacher directory
+- Specialization tracking
+- Performance metrics
+- Schedule management
+
+### Course Management
+- Course catalog
+- Course creation and editing
+- Student enrollment
+- Course statistics
+
+### Enrollment System
+- Easy enrollment process
+- Payment status tracking
+- Enrollment history
+- Batch operations
+
+## Project Structure
+
+```
+src/
+├── components/     # Reusable UI components
+├── pages/          # Main application pages
+├── services/       # API and other services
+├── context/        # React context providers
+├── hooks/          # Custom React hooks
+├── utils/          # Utility functions
+├── assets/         # Static assets
+└── theme/          # Theme configuration
+```
 
 ## Available Scripts
 
 In the project directory, you can run:
 
-### `npm start`
+### `yarn start`
 
-Runs the app in the development mode.\
+Runs the app in development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
 
-### `npm test`
+### `yarn test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Launches the test runner in the interactive watch mode.
 
-### `npm run build`
+### `yarn build`
 
 Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+The build is minified and optimized for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Development Guidelines
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Code Style
+- Use functional components with hooks
+- Follow React best practices
+- Implement proper error handling
+- Write meaningful component and function names
+- Add comments for complex logic
 
-### `npm run eject`
+### State Management
+- Use React Context for global state
+- Keep component state local when possible
+- Implement proper loading and error states
+- Handle API responses consistently
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Component Structure
+- Keep components small and focused
+- Implement proper prop validation
+- Use TypeScript for better type safety
+- Follow the container/presenter pattern
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Styling
+- Use Ant Design components when possible
+- Follow the design system guidelines
+- Implement responsive design
+- Keep custom CSS minimal
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Contributing
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+1. Fork the repository
+2. Create a new branch for your feature
+3. Commit your changes
+4. Push to your branch
+5. Create a Pull Request
 
-## Learn More
+## License
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This project is licensed under the MIT License - see the LICENSE file for details
